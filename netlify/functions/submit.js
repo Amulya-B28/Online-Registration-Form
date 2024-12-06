@@ -1,10 +1,12 @@
 // netlify/functions/submit.js
 exports.handler = async function(event, context) {
-    if (event.httpMethod === "POST") {
+  // Check if the method is POST
+  if (event.httpMethod === "POST") {
+    try {
+      // Parse the incoming JSON data
       const { name, email, phone, dob, gender, address } = JSON.parse(event.body);
-  
-      // Process the data as needed, such as saving to a database or sending an email
-  
+      
+      // Process the data (for now, just return it)
       return {
         statusCode: 200,
         body: JSON.stringify({
@@ -12,8 +14,14 @@ exports.handler = async function(event, context) {
           data: { name, email, phone, dob, gender, address }
         })
       };
+    } catch (error) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: "Invalid JSON data", error: error.message })
+      };
     }
-  
-    return { statusCode: 405, body: "Method Not Allowed" };
-  };
-  
+  }
+
+  // Return a 405 if the method is not POST
+  return { statusCode: 405, body: "Method Not Allowed" };
+};
